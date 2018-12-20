@@ -1,15 +1,12 @@
 [![Build Status](https://travis-ci.org/groupoid/cubical.svg?branch=master)](https://travis-ci.org/groupoid/cubical)
 
-Groupoid Infinity Cubical Base Library
-======================================
+Groupoid Infinity 
+=================
 
-This library is dedicated to [cubical](https://github.com/mortberg/cubicaltt)-compatible
-typecheckers based on homotopy interval
-<b>[0,1]</b> and MLTT as a core. The base library is founded
-on top of 5 core modules: <b>proto</b> (composition, id, const),
-<b>path</b> (subst, trans, cong, refl, singl, sym),
-<b>propset</b> (isContr, isProp, isSet),
-<b>equiv</b> (fiber, eqiuv) and <b>iso</b> (lemIso, isoPath).
+The Groupoid Infinity Cubical Base Library is dedicated to [cubical](https://github.com/mortberg/cubicaltt)-compatible
+typecheckers based on homotopy interval <b>[0,1]</b> and MLTT as a core. The base library is founded
+on top of 5 core modules: <b>proto</b> (composition, id, const), <b>path</b> (subst, trans, cong, refl, singl, sym),
+<b>propset</b> (isContr, isProp, isSet), <b>equiv</b> (fiber, eqiuv) and <b>iso</b> (lemIso, isoPath).
 This machinery is enough to prove univalence axiom.
 
 (i) The library has rich recursion scheme primitives
