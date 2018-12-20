@@ -77,39 +77,21 @@ eq_nat  : eq_ = (nat, natEq)
 eq_nat_ : eq nat = natEq
 
 mutual
-  evenT : nat -> U = split
-    zero -> unit
-    succ n -> oddT n
+  even : nat -> bool = split
+    zero -> true
+    succ n -> odd n
 
-  oddT : nat -> U = split
-    zero -> empty
-    succ n -> evenT n
-
-zeroIsEvenT : evenT zero = tt
-
-evenSuccIsOddT (n: nat) (pn: evenT n): oddT (succ n) = pn
-oddSuccIsEvenT (n: nat) (pn: oddT n): evenT (succ n) = pn
-
-evenPredIsOddT: (n: nat) (pn: oddT (succ n)) -> evenT n = split
-  zero -> \(pn: oddT (succ zero)) -> pn
-  succ n' ->  \(pn: oddT (succ (succ n'))) -> pn
+  odd : nat -> bool = split
+    zero -> false
+    succ n -> even n
 
 mutual
-  evenPlusEvenIsEven : (n m:nat) (pn:evenT n) (pm : evenT m) -> evenT (add m n) = split
-    zero   -> \(m : nat) (pn : evenT zero)    (pm : evenT m) -> pm
-    succ n' -> \(m : nat) (pn : oddT n')       (pm : evenT m) -> oddPlusEvenIsOdd n' m pn pm
-
-  oddPlusEvenIsOdd : (n m:nat) (pn:oddT n) (pm: evenT m) -> oddT (add m n) = split
-    zero   -> \(m : nat) (pn : oddT zero)  (pm : evenT m) -> efq (oddT m) pn
-    succ n' -> \(m : nat) (pn : evenT n')   (pm : evenT m) -> evenPlusEvenIsEven n' m pn pm
-
-  oddPlusOddIsEven : (n m:nat) (pn:oddT n) (pm : oddT m) -> evenT (add m n) = split
-    zero   -> \(m : nat) (pn : oddT zero)  (pm : oddT m) -> efq (evenT m) pn
-    succ n' -> \(m : nat) (pn : evenT n')   (pm : oddT m) -> evenPlusOddIsOdd n' m pn pm
-
-  evenPlusOddIsOdd : (n m:nat) (pn:evenT n) (pm : oddT m) -> oddT (add m n) = split
-    zero   -> \(m : nat) (pn : evenT zero)  (pm : oddT m) -> pm
-    succ n' -> \(m : nat) (pn : oddT n')     (pm : oddT m) -> oddPlusOddIsEven n' m pn pm
+  evenodd : (n : nat) -> Path bool (even n) (odd (succ n)) = split
+    zero -> <i> true
+    succ x -> <i> (oddeven x) @ i
+  oddeven : (n :nat) -> Path bool (odd n) (even (succ n)) = split
+    zero -> <i> false
+    succ x -> <i> (evenodd x) @ i
 
 -- examples 1.9.1 and 1.9.2
 double_via_rec_nat : nat -> nat = natRec nat zero (\(_:nat) (y:nat) -> succ (succ y))
