@@ -50,8 +50,8 @@ eitherInd (A B: U) (C: either A B -> U)
 id (A: U): U = A -> A
 idfun (A: U) (a: A): A = a
 const1 (A: U): U = A
-const2 (A B: U) (a: A): U = B
-const3 (A: U) (B: A -> U) (a: A): U = B a
+const2 (A: U) (a: A): U = A
+const3 (A B: U) (a: A): U = B
 lam         (A: U) (B: A -> U) (x: A) (b: B(x)): A -> B(x) = \(x: A) -> b --\ dependent
 app         (A: U) (B: A -> U) (x: A) (f: A -> B(x)): B(x) = f(x)         --/ version
 lambda    (A B: U) (b: B): A -> B = \(_:A) -> b --\ non-dependent
