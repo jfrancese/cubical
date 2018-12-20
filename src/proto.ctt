@@ -49,7 +49,7 @@ eitherInd (A B: U) (C: either A B -> U)
 -- functions proto_pi ?
 id          (A: U): U = A -> A
 idfun       (A: U) (a: A): A = a
-const     (A B: U): U = A
+const       (A: U): U = A
 lam         (A: U) (B: A -> U) (x: A) (b: B(x)): A -> B(x) = \(x: A) -> b --\ dependent
 app         (A: U) (B: A -> U) (x: A) (f: A -> B(x)): B(x) = f(x)         --/ version
 lambda    (A B: U) (b: B): A -> B = \(_:A) -> b --\ non-dependent
