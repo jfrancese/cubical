@@ -25,6 +25,9 @@ before_install:
 install:
   - git clone git://github.com/mortberg/cubicaltt && cd cubicaltt
   - stack build
-  - ls ./.stack-work/dist/x86_64-linux
+  - CUBICAL=$(stack path --local-install-root)/bin/cubical
   - cd ..
-  - ./cubicaltt/.stack-work/dist/x86_64-linux/Cabal-1.24.2.0/build/cubical/cubical -b src/k_theory.ctt
+  - $CUBICAL -b src/k_thery.ctt
+  - $CUBICAL -b src/nat_thery.ctt
+  - $CUBICAL -b src/category.ctt
+  - $CUBICAL -b src/homotopy.ctt

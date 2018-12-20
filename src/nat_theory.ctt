@@ -55,8 +55,7 @@ idnat : nat -> nat = split
   succ n -> succ (idnat n)
 
 test : Path (nat -> nat) idnat (idfun nat) = piext nat (\(_ : nat) -> nat) idnat (idfun nat) rem
-  where
-  rem : (n : nat) -> Path nat (idnat n) n = split
+  where rem : (n : nat) -> Path nat (idnat n) n = split
     zero -> refl nat zero
     succ n -> mapOnPath nat nat (\(x : nat) -> succ x) (idnat n) n (rem n)
 
@@ -73,7 +72,6 @@ natDec : (n m:nat) -> dec (Path nat n m) = split
                  (sucInj n m) (natDec n m))
 
 natSet : isSet nat = hedberg nat natDec
-
 
 eq_nat  : eq_ = (nat, natEq)
 eq_nat_ : eq nat = natEq
@@ -127,35 +125,33 @@ fmax: (n:nat) -> Fin (succ n) = split { zero -> fz zero ; succ n -> fs (succ n) 
 --   ack(0, n) ≡ succ(n),
 --   ack(succ(m), 0) ≡ ack(m, 1),
 --   ack(succ(m),succ(n)) ≡ ack(m, ack(succ(m), n)).
-ack : nat -> nat -> nat =
-  natRec (nat->nat)
-          (\(n:nat) -> succ n)
-          (\(m:nat) (_:nat->nat) (n:nat) ->
-            natRec nat (ack m one) (\(n':nat) (_:nat) -> ack m (ack (succ m) n')) n
-          )
 
+ack : nat -> nat -> nat =
+  natRec (nat->nat) (\(n:nat) -> succ n)
+                    (\(m:nat) (_:nat->nat) (n:nat) -> natRec nat (ack m one)
+                    (\(p:nat) (_:nat) -> ack m (ack (succ m) p)) n)
 
 -- As a lead-in to exercice 1.8, part three (prove that nat is a semi-ring)
 -- lets prove that double x = add x x
+
 double : nat -> nat = split
   zero -> zero
   succ n -> succ (succ (double n))
 
 double_n_is_add_n_n : (n:nat) -> Path nat (double n) (add n n) = split
   zero -> <i> zero
-  succ x -> composition nat
-                (succ (succ (double x)))
-                (succ (succ (add x x)))
-                (succ (add (succ x) x))
-             (<j> (succ (succ (double_n_is_add_n_n x @ j))))
-             (<k> succ (add_succ x x @ -k))
+  succ x -> composition nat (succ (succ (double x)))
+                            (succ (succ (add x x)))
+                            (succ (add  (succ x) x))
+                             (<j> (succ (succ (double_n_is_add_n_n x @ j))))
+                             (<k>  succ (add_succ x x @ -k))
 
 -- Same result, but with cryptic comp application obtained by expanding composition
 -- Note the empty third argument to comp
 double_n_is_add_n_n_via_cryptic_comp : (n:nat) -> Path nat (double n) (add n n) = split
   zero -> <i> zero
   succ x -> comp (<i> Path nat (succ (succ (double x))) (succ (add_succ x x @ -i)))
-                (<j> (succ (succ (double_n_is_add_n_n x @ j)))) []
+                 (<j> (succ (succ (double_n_is_add_n_n x @ j)))) []
 
 -- Same result, but with more typical comp application
 double_n_is_add_n_n_via_comp : (n:nat) -> Path nat (double n) (add n n) = split
