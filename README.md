@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/groupoid/cubical.svg?branch=master)](https://travis-ci.org/groupoid/cubical)
 
-Groupoid Infinity 
+Groupoid Infinity
 =================
 
 The Groupoid Infinity Cubical Base Library is dedicated to [cubical](https://github.com/mortberg/cubicaltt)-compatible
@@ -9,16 +9,11 @@ on top of 5 core modules: <b>proto</b> (composition, id, const), <b>path</b> (su
 <b>propset</b> (isContr, isProp, isSet), <b>equiv</b> (fiber, eqiuv) and <b>iso</b> (lemIso, isoPath).
 This machinery is enough to prove univalence axiom.
 
-(i) The library has rich recursion scheme primitives
-in lambek module, while very basic nat, list, stream
-functionality. (ii) The very basic theorems are given
-in pi, iso_pi, sigma, iso_sigma, retract modules.
-(iii) The library has category theory theorems from
-HoTT book in cat, fun and category modules.
-(iv) The library also includes some impredicative
-categorical encoding sketches in coproduct_set.
-lambek also includes inductive semantics modeled
-with cata/ana recursion and fixpoint adjoints in/out.
+(i) The library has rich recursion scheme primitives in lambek module, while very basic nat, list, stream
+functionality. (ii) The very basic theorems are given in pi, iso_pi, sigma, iso_sigma, retract modules.
+(iii) The library has category theory theorems from HoTT book in cat, fun and category modules.
+(iv) The library also includes some impredicative categorical encoding sketches in coproduct_set.
+lambek also includes inductive semantics modeled with cata/ana recursion and fixpoint adjoints in/out.
 
 This library is best to read with HoTT book at http://groupoid.space/mltt/types/
 
