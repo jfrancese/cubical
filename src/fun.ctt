@@ -21,6 +21,8 @@ catfunctor (A B: precategory): U
      Path (hom B (ob x) (ob z)) (mor x z (compose A x y z f g))
       (compose B (ob x) (ob y) (ob z) (mor x y f) (mor y z g)))
 
+grpfunctor (A B: groupoid): U = catfunctor (grp_to_cat A) (grp_to_cat B) -- TODO: make groupoid functor
+
 idFunctor (A: precategory): catfunctor A A
   = (\(x: carrier A) -> x,
      \(x y: carrier A) (h: hom A x y) -> h,
