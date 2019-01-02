@@ -80,7 +80,7 @@ presheaf (C: precategory): U
   = catfunctor (opCat C) Set
 
 prestack (C: precategory) (X: U): U
-  = catfunctor (opCat C) (grp_to_cat (PathGrpd X))
+  = grpfunctor (opCat C) (PathGrpd X)
 
 Co (C: precategory) (cod: carrier C) : U
   = (dom: carrier C)
