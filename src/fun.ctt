@@ -9,8 +9,8 @@
    HoTT 9.4 Equivalences -}
 
 module fun where
-import cat
 import iso_sigma
+import cat
 
 -- Definition 9.2.1. Functor on Precategories
 catfunctor (A B: precategory): U
@@ -21,8 +21,21 @@ catfunctor (A B: precategory): U
      Path (hom B (ob x) (ob z)) (mor x z (compose A x y z f g))
       (compose B (ob x) (ob y) (ob z) (mor x y f) (mor y z g)))
 
+grpfunctor2 (A: precategory) (B: groupoid): U
+  = catfunctor A (grp_to_cat B) -- TODO: make groupoid functor
+
+isHae (A B: U) (f: A -> B): U
+  = (g: B -> A)
+  * (eta_: Path (id A) (o A B A g f) (idfun A))
+  * (eps_: Path (id B) (o B A B f g) (idfun B))
+  * ((x: A) -> Path B (f ((eta_ @ 0) x)) ((eps_ @ 0) (f x)))
+
 grpfunctor (A: precategory) (B: groupoid): U
-    = catfunctor A (grp_to_cat B) -- TODO: make groupoid functor
+  = (ob: carrier A -> B.1.1)
+  * (mor: (x y: carrier A) (z: hom A x y) (f: B.1.2 (ob x) (ob y)) (g: B.1.2 (ob y) (ob x))
+          (s: Path (B.1.2 (ob x) (ob x)) (B.2.2.1 (ob x) (ob y) (ob x) f g) (B.2.1 (ob x)))
+          (t: Path (B.1.2 (ob y) (ob y)) (B.2.2.1 (ob y) (ob x) (ob y) g f) (B.2.1 (ob y))) -> unit)
+  * unit -- ...
 
 idFunctor (A: precategory): catfunctor A A
   = (\(x: carrier A) -> x,
