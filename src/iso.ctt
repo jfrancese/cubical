@@ -120,7 +120,7 @@ IsoPathType (A B: U): isIso (isIso A B) (Path U A B)
   = (iso_Intro A B,iso_Elim A B,iso_Comp A B,iso_Uniq A B)
 
 PiType (A: U) (B: A -> U): isIso (Pi A B) (Pi A B)
-  = (app A B,lam A B,Pi_Beta A B,Pi_Eta A B)
+  = (app A B,app A B,Pi_Eta A B,Pi_Eta A B)
 
---UnivType (A B: U): isIso (equiv A B) (Path U A B)
---  = (equivToPath A B, pathToEquiv A B,eqToEq A B,transPathFun2 A B)
+UnivType (A B: U): isIso (equiv A B) (Path U A B)
+  = (equivToPath A B, pathToEquiv A B,eqToEq A B,idToPath A B)

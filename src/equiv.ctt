@@ -77,7 +77,7 @@ eqToEq (A B : U) (p : Path U A B) : Path (Path U A B) (equivToPath A B (pathToEq
                                       (j=1) -> (p@i,pathToEquiv Ai B (<k> p @ (i \/ k))) ]
 
 -- Univalence Uniqueness
-transPathFun2 (A B : U) (w : equiv A B) : Path (equiv A B) w (pathToEquiv A B (equivToPath A B w)) = undefined
+transPathFun2 (A B : U) : (w : equiv A B) -> Path (equiv A B) w (pathToEquiv A B (equivToPath A B w)) = undefined
 transPathFun (A B : U) (w : equiv A B) : Path (A -> B) w.1 (pathToEquiv A B (equivToPath A B w)).1
   = <i> \ (a:A) -> let b: B = w.1 a
                        u: A = comp (<j>A) a []
