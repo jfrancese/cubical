@@ -424,6 +424,9 @@ isType (M: monoid) (G: PSh M) (A: G.1 -> U): U
   * ((g:G.1)(a:A g) (t r: M.1.1) -> PathP (coe2 g t r) (star (G.2.1 g t) (star g a t) r)
                                                        (star g a (M.2.1 t r)))
 
+Ctx: monoid -> U = PSh
+Substitution: (M: monoid) -> Ctx M -> Ctx M -> U = NatPSh
+
 Type (M: monoid) (G: PSh M): U
   = (A: G.1 -> U)
   * isType M G A
