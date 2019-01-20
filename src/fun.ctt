@@ -21,9 +21,6 @@ catfunctor (A B: precategory): U
      Path (hom B (ob x) (ob z)) (mor x z (compose A x y z f g))
       (compose B (ob x) (ob y) (ob z) (mor x y f) (mor y z g)))
 
-grpfunctor2 (A: precategory) (B: groupoid): U
-  = catfunctor A (grp_to_cat B) -- TODO: make groupoid functor
-
 isHae (A B: U) (f: A -> B): U
   = (g: B -> A)
   * (eta_: Path (id A) (o A B A g f) (idfun A))
