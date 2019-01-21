@@ -1,12 +1,40 @@
 {- Homology Theory:
-   - Ker, Im.
+   - unit Differential Group;
+   - Chain Complexes.
+   - Ker, Im;
    Copyright (c) Groupoid Infinity, 2016-2018. -}
 
 module homology where
+import int
+import set
 import algebra
+import quotient
+
+isDifferentialGroup (G: SET): U
+  = (g: isGroup G)
+  * (comm: isCommutative G.1 g.1.1)
+  * (boundary: G.1 -> G.1)
+  * ((x: G.1) -> Path G.1 (boundary (boundary x)) g.1.2.2.1)
+
+unitDGroup: dgroup
+  = ((unit,setUnit),(((op,asso,id,(lx,rx)),inv,(li,ri)),comm,b,z)) where
+    op: unit -> unit -> unit = \(x y: unit) -> y
+    id: unit = tt
+    inv: unit -> unit = \(x: unit) -> tt
+    lx: (x: unit) -> Path unit (op id x) x = \(x: unit) -> <i> (op id x)
+    rx: (x: unit) -> Path unit (op x id) x = split tt -> <i> tt
+    li: (x: unit) -> Path unit (op (inv x) x) id = split tt -> <i> tt
+    ri: (x: unit) -> Path unit (op x (inv x)) id = split tt -> <i> tt
+    b: unit -> unit = idfun unit
+    z: (x: unit) -> Path unit (b (b x)) id = split tt -> <i> tt
+    asso: isAssociative unit op = \(x y z: unit) -> <i> z
+    comm: isCommutative unit op = split tt -> \(y: unit) -> <i> rx y @ -i
 
 -- Group Homomorphism Kernels and Cokernels
 -- are just Homotopy Pullbacks and Pushouts pullback.ctt
+
+homGroup (G H: group) (f: G.1.1 -> H.1.1): U
+  = (g1 g2: G.1.1) * Path H.1.1 (f (G.2.1.1 g1 g2)) (H.2.1.1 (f g1) (f g2))
 
 kerGroup (G H: group) (f: G.1.1 -> H.1.1): U
   = (g: G.1.1) * (Path H.1.1 (f g) H.2.1.2.2.1)
@@ -19,3 +47,44 @@ kerRing  (G H: ring)  (f: G.1.1 -> H.1.1): U
 
 kerAb (G H: abgroup)  (f: G.1.1 -> H.1.1): U
   = (g: G.1.1) * (Path H.1.1 (f g) H.2.1.1.2.2.1)
+
+ChainComplex: U
+  = (head: dgroup)
+  * (chain: nat -> dgroup)
+  * (augment: dgrouphom (chain zero) head)
+  * ((n: nat) -> dgrouphom (chain (succ n)) (chain n))
+
+CochainComplex: U
+  = (head: dgroup)
+  * (cochain: nat -> dgroup)
+  * (augment: dgrouphom head (cochain zero))
+  * ((n: nat) -> dgrouphom (cochain n) (cochain (succ n)))
+
+homology_group (x: ChainComplex): (n: Z) -> dgroup = split
+   inl x -> unitDGroup
+   inr x -> natElim x where
+   natElim: nat -> dgroup = split
+      zero -> unitDGroup
+      succ x -> unitDGroup
+
+-- diff : El → El → El
+-- diff g h = g ⊙ inv h
+
+diff (H: dgroup) (g h: H.1.1) : H.1.1 = (opGroup (H.1,H.2.1)) g ((invGroup (H.1,H.2.1)) h)
+
+-- ker/im-rel' : Rel H.El (lmax i j)
+-- ker/im-rel' h₁ h₂ = Trunc -1 (hfiber φ.f (H.diff h₁ h₂))
+
+KerImRel (G H: dgroup) (phi: dgrouphom G H) (x y: H.1.1): U
+  = pTrunc (fiber G.1.1 H.1.1 phi.1 (diff H x y))
+
+-- ker/im-El : Type (lmax (lmax i j) k)
+-- ker/im-El = SetQuot ker/im-rel
+
+KerImEl (G H: dgroup) (phi: dgrouphom G H): U
+  = quot H.1.1 (KerImRel G H phi)
+
+-- G ---φ--→ᴳ H ---ψ--→ᴳ K
+
+KerIm (G H K: dgroup) (phi: dgrouphom G H) (psi: dgrouphom H K): dgroup
+  = undefined

@@ -12,7 +12,7 @@
 
 module algebra where
 import pi
-import prop
+import set
 
 isAssociative (M: U) (op: M -> M -> M): U
   = (a b c: M) -> Path M (op a (op b c)) (op (op a b) c)
@@ -175,24 +175,24 @@ isMonoid (M: SET): U
   * (id: M.1)
   * (hasIdentity M.1 op id)
 
-isCMonoid (M: SET): U
-  = (m: isMonoid M)
-  * (isCommutative M.1 m.1)
-
 isGroup (G: SET): U
   = (m: isMonoid G)
   * (inv: G.1 -> G.1)
   * (hasInverse G.1 m.1 m.2.2.1 inv)
-
-isAbGroup (G: SET): U
-  = (g: isGroup G)
-  * (isCommutative G.1 g.1.1)
 
 isDifferentialGroup (G: SET): U
   = (g: isGroup G)
   * (comm: isCommutative G.1 g.1.1)
   * (boundary: G.1 -> G.1)
   * ((x: G.1) -> Path G.1 (boundary (boundary x)) g.1.2.2.1)
+
+isCMonoid (M: SET): U
+  = (m: isMonoid M)
+  * (isCommutative M.1 m.1)
+
+isAbGroup (G: SET): U
+  = (g: isGroup G)
+  * (isCommutative G.1 g.1.1)
 
 isRing (R: SET): U
   = (mul: isMonoid R)
@@ -204,13 +204,27 @@ isAbRing (R: SET): U
   * (add: isAbGroup R)
   * (isDistributive R.1 add.1.1.1 mul.1.1)
 
+
 monoid:  U = (X: SET) * isMonoid X
 cmonoid: U = (X: SET) * isCMonoid X
 group:   U = (X: SET) * isGroup X
 abgroup: U = (X: SET) * isAbGroup X
 ring:    U = (X: SET) * isRing X
 abring:  U = (X: SET) * isAbRing X
+dgroup:  U = (X: SET) * isDifferentialGroup X
 
+-- Unit Abelian Group
+unitAbGroup: abgroup
+  = ((unit,setUnit),(((op,asso,id,(lx,rx)),inv,(li,ri)),comm)) where
+    op: unit -> unit -> unit = \(x y: unit) -> y
+    id: unit = tt
+    inv: unit -> unit = \(x: unit) -> tt
+    lx: (x: unit) -> Path unit (op id x) x = \(x: unit) -> <i> (op id x)
+    rx: (x: unit) -> Path unit (op x id) x = split tt -> <i> tt
+    li: (x: unit) -> Path unit (op (inv x) x) id = split tt -> <i> tt
+    ri: (x: unit) -> Path unit (op x (inv x)) id = split tt -> <i> tt
+    asso: isAssociative unit op = split tt -> \(x y: unit) -> <i> y
+    comm: isCommutative unit op = split tt -> \(x: unit) -> <i> rx x @ -i
 
 -- Accessors
 opMonoid       (m: monoid): m.1.1 -> m.1.1 -> m.1.1 = m.2.1
@@ -325,9 +339,10 @@ monoidhom (a b: monoid): U
   * (ismonoidhom a b f)
 
 -- Homomorphisms between underlying monoids
-cmonoidhom  (a b: cmonoid): U = monoidhom (a.1, a.2.1)   (b.1, b.2.1)
-grouphom    (a b: group):   U = monoidhom (a.1, a.2.1)   (b.1, b.2.1)
+cmonoidhom   (a b: cmonoid): U = monoidhom (a.1, a.2.1)   (b.1, b.2.1)
+grouphom     (a b: group):   U = monoidhom (a.1, a.2.1)   (b.1, b.2.1)
 abgrouphom   (a b: abgroup): U = monoidhom (a.1, a.2.1.1) (b.1, b.2.1.1)
+dgrouphom    (a b: dgroup):  U = monoidhom (a.1, a.2.1.1) (b.1, b.2.1.1)
 cmonabgrouphom (a: cmonoid) (b: abgroup): U = monoidhom (a.1, a.2.1) (b.1, b.2.1.1)
 
 -- Homomorphism constructors

@@ -37,16 +37,4 @@ catSeq: precategory -> precategory -> U = Seq precategory catfunctor
 catNil (X: precategory): catSeq X X = seqNil X
 catCons (X Y Z: precategory) (h: catfunctor X Y) (t: catSeq Y Z): catSeq X Z = seqCons X Y Z h t
 
-ChainComplex: U
-  = (head: abgroup)
-  * (chain: nat -> abgroup)
-  * (augment: abgrouphom (chain zero) head)
-  * ((n: nat) -> abgrouphom (chain (succ n)) (chain n))
-
-CochainComplex: U
-  = (head: abgroup)
-  * (cochain: nat -> abgroup)
-  * (augment: abgrouphom head (cochain zero))
-  * ((n: nat) -> abgrouphom (cochain n) (cochain (succ n)))
-
 opaque Seq
