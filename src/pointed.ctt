@@ -28,13 +28,6 @@ omega : nat -> pointed -> pointed = split
   zero -> idfun pointed
   succ n -> \(A: pointed) -> omega n (omega1 A)
 
-omega_ (A: pointed): nat -> pointed = split -- omega n A
-    zero -> A
-    succ x -> omegaSplit x where
-    omegaSplit: nat -> pointed = split
-         zero -> omega1 A
-         succ x -> omega_ (omega_ A (succ x)) (succ x)
-
 -- Definition 8.4.1
 pmap (A B: pointed): U = (f: A.1 -> B.1) * (Path B.1 (f (point A)) (point B))
 zmap (X Y: pointed): space X -> space Y = \ (x: space X) -> point Y
@@ -63,3 +56,29 @@ omegaMapRefl2 (A: pointed) (B: U) (h: A.1 -> B) (p: (omega2 A).1)
 omegaMapRefl3 (A: pointed) (B: U) (h: A.1 -> B) (p: (omega3 A).1)
   : (omega3 (B, h (point A))).1
   = <i j k> h (p @ i @ j @ k)
+
+-- The Wegde Sum : X \vee Y = X \times \{ y_0 \} \cup \{ x_0 \} \times Y
+data Wedge (A : pointed) (B : pointed)
+   = winl  (a : A.1)
+   | winr  (b : B.1)
+   | wglue <x> [ (x = 0) -> winl A.2 ,
+                 (x = 1) -> winr B.2 ]
+
+-- The Smash Product : X \wedge Y = X \times Y / X \vee Y
+data Smash (A : pointed) (B : pointed)
+   = spair (a : A.1) (b : B.1)
+   | smash (a : A.1) (b : B.1) <x> [(x=0) -> spair a B.2, (x=1) -> spair A.2 b]
+   | smashpt <x y> [(x=0) -> smash {Smash A B} A.2 B.2 @ y,
+                    (x=1) -> spair A.2 B.2,
+                    (y=0) -> spair A.2 B.2,
+                    (y=1) -> spair A.2 B.2]
+
+data Join (A : U) (B : U)
+   = joinl (a : A)
+   | joinr (b : B)
+   | join (a:A) (b:B) <i> [(i=0) -> joinl a,
+                           (i=1) -> joinr b]
+
+SmashPt (A : pointed) (B : pointed) : pointed = (Smash A B, spair A.2 B.2)
+WedgePt (A : pointed) (B : pointed) : pointed = (Wedge A B, winl A.2)
+JoinPt  (A : pointed) (B : pointed) : pointed = (Join A.1 B.1, joinl A.2)
