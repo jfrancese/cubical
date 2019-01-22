@@ -31,7 +31,7 @@ subgroupProp (G: group): U
   * (ident: prop (idGroup G))
   * (inv: (g: G.1.1) -> prop g -> prop ((invGroup G) g))
   * (op: (g1 g2: G.1.1) -> prop g1 -> prop g2 -> prop ((opGroup G) g1 g2))
-  * ((g1 g2: G.1.1) -> prop g1 -> prop g2 -> prop (diff G g1 g2))
+  * ((g1 g2: G.1.1) -> prop g1 -> prop g2 -> prop (diff G g1 g2)) -- diff
 
 isNormal (G: group) (P: subgroupProp G) : U
   = (X: group)
@@ -66,26 +66,22 @@ subgroup (G: group) (P: subgroupProp G): group
 ker_prop (G H: group) (phi: grouphom G H)
   : subgroupProp G
   = (prop,level,ident,inv,op,di) where
-    g: group = G --(G.1,G.2.1)
-    h: group = H --(H.1,H.2.1)
-    prop (g: G.1.1): U = Path H.1.1 (phi.1 g) (idGroup h)
-    ident: prop (idGroup g) = phi.2.2
+    prop (x: G.1.1): U = Path H.1.1 (phi.1 x) (idGroup H)
+    ident: prop (idGroup G) = phi.2.2
     level (x: G.1.1): isProp (prop x) = undefined
-    inv: (x: G.1.1) -> prop x -> prop ((invGroup g) x) = undefined
-    op: (g1 g2: G.1.1) -> prop g1 -> prop g2 -> prop ((opGroup g) g1 g2) = undefined
+    inv: (x: G.1.1) -> prop x -> prop ((invGroup G) x) = undefined
+    op: (g1 g2: G.1.1) -> prop g1 -> prop g2 -> prop ((opGroup G) g1 g2) = undefined
     di: (g1 g2: G.1.1) -> prop g1 -> prop g2 -> prop (diff G g1 g2) = undefined
         -- phi.2.1 g1 (invGroup g2) ∙ ap ((opGroup H) (g2 g2)) (phi.2.2 g2)
 
 im_prop (G H: group) (phi: grouphom G H)
   : subgroupProp H
   = (prop,level,ident,inv,op,di) where
-    g: group = G--(G.1,G.2.1)
-    h: group = H--(H.1,H.2.1)
     prop (x: H.1.1): U = pTrunc (fiber G.1.1 H.1.1 phi.1 x)
-    ident: prop (idGroup h) = inc ((idGroup g),<i>phi.2.2 @ -i)
+    ident: prop (idGroup H) = inc ((idGroup G),<i>phi.2.2 @ -i)
     level (x: H.1.1): isProp (prop x) = pTruncIsProp (fiber G.1.1 H.1.1 phi.1 x)
-    inv: (x: H.1.1) -> prop x -> prop ((invGroup h) x) = undefined
-    op: (g1 g2: H.1.1) -> prop g1 -> prop g2 -> prop ((opGroup h) g1 g2) = undefined
+    inv: (x: H.1.1) -> prop x -> prop ((invGroup H) x) = undefined
+    op: (g1 g2: H.1.1) -> prop g1 -> prop g2 -> prop ((opGroup H) g1 g2) = undefined
     di: (h1 h2: H.1.1) -> prop h1 -> prop h2 -> prop (diff H h1 h2) = undefined
 
 Ker (G: abgroup) (H: group) (phi: grouphom (G.1,G.2.1) H): group
