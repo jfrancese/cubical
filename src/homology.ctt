@@ -85,10 +85,10 @@ im_prop (G H: group) (phi: grouphom G H)
     di: (h1 h2: H.1.1) -> prop h1 -> prop h2 -> prop (diff H h1 h2) = undefined
 
 Ker (G: abgroup) (H: group) (phi: grouphom (G.1,G.2.1) H): group
-  = subgroup (G.1,G.2.1) (ker_prop (G.1,G.2.1) H phi) where
+  = subgroup (G.1,G.2.1) (ker_prop (G.1,G.2.1) H phi)
 
 Im (G: group) (H: abgroup) (psi: grouphom G (H.1,H.2.1)): group
-  = subgroup (H.1,H.2.1) (im_prop G (H.1,H.2.1) psi) where
+  = subgroup (H.1,H.2.1) (im_prop G (H.1,H.2.1) psi)
 
 KerImRel (G H: group) (phi: grouphom G H) (x y: H.1.1): U
   = pTrunc (fiber G.1.1 H.1.1 phi.1 (diff H x y))
@@ -105,10 +105,10 @@ mutual
      seqCons x y z -> x
 
 ChainComplex: U
-  = (sequence: Seq dgroup dgrouphom)
-  * (index: nat -> dgroup)
-  * (augment: dgrouphom (index zero) (head dgroup dgrouphom sequence))
-  * ((n: nat) -> dgrouphom (index (succ n)) (index n))
+  = (sequence: Seq abgroup abgrouphom)
+  * (index: nat -> abgroup)
+  * (augment: abgrouphom (index zero) (head abgroup abgrouphom sequence))
+  * ((n: nat) -> abgrouphom (index (succ n)) (index n))
 
 homology_group (x: ChainComplex): (n: Z) -> dgroup = split
    inl x -> unitDGroup
@@ -118,10 +118,10 @@ homology_group (x: ChainComplex): (n: Z) -> dgroup = split
       succ x -> unitDGroup -- TODO:
 
 CochainComplex: U
-  = (sequence: Seq dgroup dgrouphom)
-  * (index: nat -> dgroup)
-  * (augment: dgrouphom (head dgroup dgrouphom sequence) (index zero))
-  * ((n: nat) -> dgrouphom (index n) (index (succ n)))
+  = (sequence: Seq abgroup abgrouphom)
+  * (index: nat -> abgroup)
+  * (augment: abgrouphom (head abgroup abgrouphom sequence) (index zero))
+  * ((n: nat) -> abgrouphom (index n) (index (succ n)))
 
 -- Theorems
 
