@@ -95,18 +95,34 @@ subgroupProp (G: dgroup): U
   * ((g1 g2: G.1.1) -> prop g1 -> prop g2 -> prop (diff G g1 g2))
 
 isNormal (G: dgroup) (P: subgroupProp G) : U
-  = (g1 g2: G.1.1) -> P.1 g2 -> P.1 (conj G g1 g2)
+  = (X: dgroup)
+  * (g1 g2: G.1.1) -> P.1 g2 -> P.1 (conj G g1 g2)
 
 normalSubgroupProp (G: dgroup): U
   = (P: subgroupProp G)
   * isNormal G P
 
-subElProp (G: dgroup) (H: subgroupProp G)
+subElProp (G: dgroup) (P: subgroupProp G)
   : subtypeProp G.1.1
-  = (H.1,H.2.1)
+  = (P.1,P.2.1)
 
-subEl (G: dgroup) (H: subgroupProp G): U
-  = subtype G.1.1 (subElProp G H)
+subEl (G: dgroup) (P: subgroupProp G): U
+  = subtype G.1.1 (subElProp G P)
+
+isSetSubEl (G: dgroup) (P: subgroupProp G): isSet (subEl G P)
+  = undefined
+
+subgroup (G: dgroup) (P: subgroupProp G): group
+  = ((subEl G P,isSetSubEl G P),(op,asso,id,(lx,rx)),inv,(li,ri)) where
+    un: U = subEl G P
+    op: un -> un -> un = undefined
+    id: un = undefined
+    inv: un -> un = undefined
+    lx: (x: un) -> Path un (op id x) x = undefined
+    rx: (x: un) -> Path un (op x id) x = undefined
+    li: (x: un) -> Path un (op (inv x) x) id = undefined
+    ri: (x: un) -> Path un (op x (inv x)) id = undefined
+    asso: isAssociative un op = undefined
 
 ker_prop (G H: dgroup) (phi: dgrouphom G H)
   : subgroupProp G
@@ -118,17 +134,21 @@ ker_prop (G H: dgroup) (phi: dgrouphom G H)
     ident: prop (idGroup g) = undefined -- TODO:
     di: (g1 g2: G.1.1) -> prop g1 -> prop g2 -> prop (diff G g1 g2) = undefined -- TODO:
 
+im_prop (G H: dgroup) (phi: dgrouphom G H)
+  : subgroupProp H
+  = undefined
+
+Ker (G H: dgroup) (phi: dgrouphom G H): group
+  = subgroup G (ker_prop G H phi)
+
+Im (G H: dgroup) (psi: dgrouphom G H): group
+  = subgroup H (im_prop G H psi)
+
 KerImRel (G H: dgroup) (phi: dgrouphom G H) (x y: H.1.1): U
   = pTrunc (fiber G.1.1 H.1.1 phi.1 (diff H x y))
 
 KerImEl (G H: dgroup) (phi: dgrouphom G H): U
   = quot H.1.1 (KerImRel G H phi)
-
-Ker (G H: dgroup) (phi: dgrouphom G H): dgroup
-  = undefined -- Normal Subgroup of G
-
-Im (H K: dgroup) (psi: dgrouphom H K): dgroup
-  = undefined -- Subgroup of K
 
 mutual
   data Seq (A: U) (B: A -> A -> U)
