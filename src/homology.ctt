@@ -22,7 +22,8 @@ subtypeProp (A: U): U
   * (a: A) -> isProp (P a)
 
 subtype (A: U) (P: subtypeProp A): U
-  = (x: A) * (P.1 x) -- prop and level
+  = (x: A) -- prop
+  * (P.1 x) -- level
 
 subgroupProp (G: group): U
   = (prop: G.1.1 -> U)
@@ -54,13 +55,13 @@ subgroup (G: group) (P: subgroupProp G): group
   = ((subEl G P,isSetSubEl G P),((op,asso,id,(lx,rx)),inv,(li,ri))) where
     un: U = subEl G P
     op (x y: un): un = ((opGroup G) x.1 y.1,P.2.2.2.2.1 x.1 y.1 x.2 y.2)
+    asso: isAssociative un op = undefined
     id: un = ((idGroup G),P.2.2.1)
-    inv (x: un): un = ((invGroup G) x.1,P.2.2.2.1 x.1 x.2)
     lx (x: un): Path un (op id x) x = undefined
     rx (x: un): Path un (op x id) x = undefined
+    inv (x: un): un = ((invGroup G) x.1,P.2.2.2.1 x.1 x.2)
     li: (x: un) -> Path un (op (inv x) x) id = undefined
     ri: (x: un) -> Path un (op x (inv x)) id = undefined
-    asso: isAssociative un op = undefined
 
 ker_prop (G H: group) (phi: grouphom G H)
   : subgroupProp G
