@@ -9,6 +9,7 @@ import int
 import set
 import algebra
 import quotient
+import pullback
 
 isDifferentialGroup (G: SET): U
   = (g: isGroup G)
@@ -67,12 +68,6 @@ isKerAb (G H: abgroup)  (f: G.1.1 -> H.1.1): U
   = (g: G.1.1)
   * (Path H.1.1 (f g) H.2.1.1.2.2.1)
 
-CochainComplex: U
-  = (head: dgroup)
-  * (cochain: nat -> dgroup)
-  * (augment: isHom head (cochain zero))
-  * ((n: nat) -> isHom (cochain n) (cochain (succ n)))
-
 diff (H: dgroup) (g h: H.1.1) : H.1.1
   = (opGroup (H.1,H.2.1)) g ((invGroup (H.1,H.2.1)) h)
 
@@ -129,14 +124,20 @@ ker_prop (G H: dgroup) (phi: dgrouphom G H)
   = (prop,level,ident,di) where
     g: group = (G.1,G.2.1)
     h: group = (H.1,H.2.1)
-    prop: G.1.1 -> U = \ (g: G.1.1) -> Path H.1.1 (phi.1 g) (idGroup h)
-    level: (x: G.1.1) -> isProp (prop x) = undefined -- TODO:
-    ident: prop (idGroup g) = undefined -- TODO:
-    di: (g1 g2: G.1.1) -> prop g1 -> prop g2 -> prop (diff G g1 g2) = undefined -- TODO:
+    prop (g: G.1.1): U = Path H.1.1 (phi.1 g) (idGroup h)
+    level (x: G.1.1): isProp (prop x) = undefined
+    ident: prop (idGroup g) = undefined
+    di: (g1 g2: G.1.1) -> prop g1 -> prop g2 -> prop (diff G g1 g2) = undefined
 
 im_prop (G H: dgroup) (phi: dgrouphom G H)
   : subgroupProp H
-  = undefined
+  = (prop,level,ident,di) where
+    g: group = (G.1,G.2.1)
+    h: group = (H.1,H.2.1)
+    prop (x: H.1.1): U = pTrunc (hofiber G.1.1 H.1.1 phi.1 x)
+    level (x: H.1.1): isProp (prop x) = pTruncIsProp (hofiber G.1.1 H.1.1 phi.1 x)
+    ident: prop (idGroup h) = undefined
+    di: (h1 h2: H.1.1) -> prop h1 -> prop h2 -> prop (diff H h1 h2) = undefined
 
 Ker (G H: dgroup) (phi: dgrouphom G H): group
   = subgroup G (ker_prop G H phi)
@@ -170,3 +171,9 @@ homology_group (x: ChainComplex): (n: Z) -> dgroup = split
    natElim: nat -> dgroup = split
       zero -> unitDGroup -- TODO:
       succ x -> unitDGroup -- TODO:
+
+CochainComplex: U
+  = (sequence: Seq dgroup dgrouphom)
+  * (index: nat -> dgroup)
+  * (augment: dgrouphom (head dgroup dgrouphom sequence) (index zero))
+  * ((n: nat) -> dgrouphom (index n) (index (succ n)))
