@@ -1,5 +1,6 @@
 {- Path Type:
    - Reflexivity, Symmetry, Composition, Kan;
+   - Connections;
    - Congruence and Respect;
    - Contractability of Singletons;
    - Substitution, Transport, J.
@@ -56,16 +57,16 @@ composition (A: U) (a b c: A) (p: Path A a b) (q: Path A b c): Path A a c
 compositionInv (A: U) (a b c: A) (p: Path A a b) (q: Path A b c): Path A c a
     = inv A a c (composition A a b c p q)
 
-connection1 (A: U) (a b: A) (p: Path A a b)
+join (A: U) (a b: A) (p: Path A a b)
   : PathP (<x> Path A (p @ x) b) p (<_> b)
   = <y x> p @ (x \/ y)
 
-connection2 (A: U) (a b: A) (p: Path A a b)
+meet (A: U) (a b: A) (p: Path A a b)
   : PathP (<x> Path A a (p @ x)) (<_> a) p
   = <x y> p @ (x /\ y)
 
-app1 (A: U) (a b: A) (p: Path A a b): A = p @ 0
-app2 (A: U) (a b: A) (p: Path A a b): A = p @ 1
+app0 (A: U) (a b: A) (p: Path A a b): A = p @ 0
+app1 (A: U) (a b: A) (p: Path A a b): A = p @ 1
 
 -- Kan filling operation
 kan (A: U) (a b c d: A) (p: Path A a b) (q: Path A a c) (r: Path A b d): Path A c d

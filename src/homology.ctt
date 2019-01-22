@@ -37,6 +37,9 @@ isNormal (G: group) (P: subgroupProp G) : U
   = (X: group)
   * (g1 g2: G.1.1) -> P.1 g2 -> P.1 (conjugate G g1 g2)
 
+isFull (G: group) (P: subgroupProp G): U
+  = (g: G.1.1) -> P.1 g
+
 normalSubgroupProp (G: group): U
   = (P: subgroupProp G)
   * isNormal G P
@@ -63,12 +66,15 @@ subgroup (G: group) (P: subgroupProp G): group
     li: (x: un) -> Path un (op (inv x) x) id = undefined
     ri: (x: un) -> Path un (op x (inv x)) id = undefined
 
+sq (A: U) (a b: A) (p q: Path A a b): Square A a a b b (<i>a) (<i>b) p q
+  = undefined
+
 ker_prop (G H: group) (phi: grouphom G H)
   : subgroupProp G
   = (prop,level,ident,inv,op,di) where
     prop (x: G.1.1): U = Path H.1.1 (phi.1 x) (idGroup H)
     ident: prop (idGroup G) = phi.2.2
-    level (x: G.1.1): isProp (prop x) = undefined
+    level (x: G.1.1): isProp (prop x) = \ (p q: prop x) -> sq H.1.1 (phi.1 x) (idGroup H) p q
     inv: (x: G.1.1) -> prop x -> prop ((invGroup G) x) = undefined
     op: (g1 g2: G.1.1) -> prop g1 -> prop g2 -> prop ((opGroup G) g1 g2) = undefined
     di: (g1 g2: G.1.1) -> prop g1 -> prop g2 -> prop (diff G g1 g2) = undefined
