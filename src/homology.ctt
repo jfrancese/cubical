@@ -9,7 +9,6 @@ import int
 import set
 import algebra
 import quotient
-import pullback
 
 isDifferentialGroup (G: SET): U
   = (g: isGroup G)
