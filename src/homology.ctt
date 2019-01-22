@@ -33,54 +33,57 @@ unitDGroup: dgroup
 -- Group Homomorphism Kernels and Cokernels
 -- are just Homotopy Pullbacks and Pushouts pullback.ctt
 
-homGroup (G H: group) (f: G.1.1 -> H.1.1): U
-  = (g1 g2: G.1.1) * Path H.1.1 (f (G.2.1.1 g1 g2)) (H.2.1.1 (f g1) (f g2))
+isGroupHom (G H: group): U
+  = (f: G.1.1 -> H.1.1)
+  * (g1 g2: G.1.1)
+  * Path H.1.1 (f ((opGroup G) g1 g2)) ((opGroup H) (f g1) (f g2))
 
-kerGroup (G H: group) (f: G.1.1 -> H.1.1): U
-  = (g: G.1.1) * (Path H.1.1 (f g) H.2.1.2.2.1)
+isHom (G H: dgroup): U
+  = (f: G.1.1 -> H.1.1)
+  * (g1 g2: G.1.1)
+  * Path H.1.1 (f ((opGroup (G.1,G.2.1)) g1 g2)) ((opGroup (H.1,H.2.1)) (f g1) (f g2))
 
-kerDGroup (G H: dgroup) (f: G.1.1 -> H.1.1): U
-  = (g: G.1.1) * (Path H.1.1 (f g) (idGroup (H.1,H.2.1)))
+isGroupKer (G H: group): U
+  = (f: G.1.1 -> H.1.1)
+  * (g: G.1.1)
+  * Path H.1.1 (f g) H.2.1.2.2.1
 
-imGroup (G H: group) (f: G.1.1 -> H.1.1): U
-  = (h: H.1.1) * (g: G.1.1) * (Path H.1.1 (f g) h)
+isKer (G H: dgroup) : U
+  = (f: G.1.1 -> H.1.1)
+  * (g: G.1.1)
+  * Path H.1.1 (f g) (idGroup (H.1,H.2.1))
 
-kerRing  (G H: ring)  (f: G.1.1 -> H.1.1): U
-  = (g: G.1.1) * (Path H.1.1 (f g) H.2.2.1.1.1.2.2.1)
+isIm (G H: group) : U
+  = (f: G.1.1 -> H.1.1)
+  * (h: H.1.1)
+  * (g: G.1.1)
+  * Path H.1.1 (f g) h
 
-kerAb (G H: abgroup)  (f: G.1.1 -> H.1.1): U
-  = (g: G.1.1) * (Path H.1.1 (f g) H.2.1.1.2.2.1)
+isKerRing  (G H: ring)  (f: G.1.1 -> H.1.1): U
+  = (g: G.1.1)
+  * (Path H.1.1 (f g) H.2.2.1.1.1.2.2.1)
 
-ChainComplex: U
-  = (head: dgroup)
-  * (chain: nat -> dgroup)
-  * (augment: dgrouphom (chain zero) head)
-  * ((n: nat) -> dgrouphom (chain (succ n)) (chain n))
+isKerAb (G H: abgroup)  (f: G.1.1 -> H.1.1): U
+  = (g: G.1.1)
+  * (Path H.1.1 (f g) H.2.1.1.2.2.1)
 
 CochainComplex: U
   = (head: dgroup)
   * (cochain: nat -> dgroup)
-  * (augment: dgrouphom head (cochain zero))
-  * ((n: nat) -> dgrouphom (cochain n) (cochain (succ n)))
-
-homology_group (x: ChainComplex): (n: Z) -> dgroup = split
-   inl x -> unitDGroup
-   inr x -> natElim x where
-   natElim: nat -> dgroup = split
-      zero -> unitDGroup -- TODO:
-      succ x -> unitDGroup -- TODO:
+  * (augment: isHom head (cochain zero))
+  * ((n: nat) -> isHom (cochain n) (cochain (succ n)))
 
 diff (H: dgroup) (g h: H.1.1) : H.1.1
   = (opGroup (H.1,H.2.1)) g ((invGroup (H.1,H.2.1)) h)
 
+conj (G: dgroup) (g1 g2: G.1.1): G.1.1
+  = diff G (op g1 g2) g1 where
+--= op (op g1 g2) (inv g1) where
+--  inv: G.1.1 -> G.1.1 = invGroup (G.1,G.2.1)
+    op:  G.1.1 -> G.1.1 -> G.1.1 = opGroup (G.1,G.2.1)
+
 subtypeProp (A: U): U
   = (P: A -> U) * (a: A) -> isProp (P a)
-
-conj (G: dgroup) (g1 g2: G.1.1): G.1.1
-  = op (op g1 g2) (inv g1) where
-    g:   group = (G.1,G.2.1)
-    op:  g.1.1 -> g.1.1 -> g.1.1 = opGroup g
-    inv: g.1.1 -> g.1.1 = invGroup g
 
 subtype (A: U) (P: subtypeProp A): U
   = (x: A) * (P.1 x)
@@ -127,28 +130,23 @@ Ker (G H: dgroup) (phi: dgrouphom G H): dgroup
 Im (H K: dgroup) (psi: dgrouphom H K): dgroup
   = undefined -- Subgroup of K
 
--- is-normal : ∀ {i j} {G : Group i} → SubgroupProp G j → Type (lmax i j)
--- is-normal {G = G} P = ∀ g₁ {g₂} → P.prop g₂ → P.prop (Group.conj G g₁ g₂)
--- NormalSubgroupProp : ∀ {i} (G : Group i) j → Type (lmax i (lsucc j))
--- NormalSubgroupProp {i} G j = Σ (SubgroupProp G j) is-normal
--- conj : El → El → El
--- conj g₁ g₂ = (g₁ ⊙ g₂) ⊙ inv g₁
--- diff : El → El → El
--- diff g h = g ⊙ inv h
--- Subtype : Type (lmax i j)
--- Subtype = Σ A P.prop
--- ker/im-rel' : Rel H.El (lmax i j)
--- ker/im-rel' h₁ h₂ = Trunc -1 (hfiber φ.f (H.diff h₁ h₂))
--- ker/im-El : Type (lmax (lmax i j) k)
--- ker/im-El = SetQuot ker/im-rel
--- G ---φ--→ᴳ H ---ψ--→ᴳ K
+mutual
+  data Seq (A: U) (B: A -> A -> U)
+     = seqNil (ob: A)
+     | seqCons (ob: A) (seq: Seq A B) (hom: B ob (head A B seq))
+  head (A: U) (B: A -> A -> U): Seq A B -> A = split
+     seqNil x -> x
+     seqCons x y z -> x
 
---  ker-propᴳ = record {M} where
---    module M where
---       prop : G.El → Type j
---       prop g = φ.f g == H.ident
---       abstract
---         ident : prop G.ident
---         ident = φ.pres-ident
---         diff : {g₁ g₂ : G.El} → prop g₁ → prop g₂ → prop (G.diff g₁ g₂)
---         diff {g₁} {g₂} p₁ p₂ = φ.pres-diff g₁ g₂ ∙ ap2 H.diff p₁ p₂ ∙ H.inv-r H.ident
+ChainComplex: U
+  = (sequence: Seq dgroup dgrouphom)
+  * (chain: nat -> dgroup)
+  * (augment: dgrouphom (chain zero) (head dgroup dgrouphom sequence))
+  * ((n: nat) -> dgrouphom (chain (succ n)) (chain n))
+
+homology_group (x: ChainComplex): (n: Z) -> dgroup = split
+   inl x -> unitDGroup
+   inr x -> natElim x where
+   natElim: nat -> dgroup = split
+      zero -> unitDGroup -- TODO:
+      succ x -> unitDGroup -- TODO:
