@@ -140,9 +140,9 @@ mutual
 
 ChainComplex: U
   = (sequence: Seq dgroup dgrouphom)
-  * (chain: nat -> dgroup)
-  * (augment: dgrouphom (chain zero) (head dgroup dgrouphom sequence))
-  * ((n: nat) -> dgrouphom (chain (succ n)) (chain n))
+  * (index: nat -> dgroup)
+  * (augment: dgrouphom (index zero) (head dgroup dgrouphom sequence))
+  * ((n: nat) -> dgrouphom (index (succ n)) (index n))
 
 homology_group (x: ChainComplex): (n: Z) -> dgroup = split
    inl x -> unitDGroup
