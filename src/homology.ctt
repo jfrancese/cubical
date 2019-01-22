@@ -39,6 +39,9 @@ homGroup (G H: group) (f: G.1.1 -> H.1.1): U
 kerGroup (G H: group) (f: G.1.1 -> H.1.1): U
   = (g: G.1.1) * (Path H.1.1 (f g) H.2.1.2.2.1)
 
+kerDGroup (G H: dgroup) (f: G.1.1 -> H.1.1): U
+  = (g: G.1.1) * (Path H.1.1 (f g) (idGroup (H.1,H.2.1)))
+
 imGroup (G H: group) (f: G.1.1 -> H.1.1): U
   = (h: H.1.1) * (g: G.1.1) * (Path H.1.1 (f g) h)
 
@@ -118,8 +121,11 @@ KerImRel (G H: dgroup) (phi: dgrouphom G H) (x y: H.1.1): U
 KerImEl (G H: dgroup) (phi: dgrouphom G H): U
   = quot H.1.1 (KerImRel G H phi)
 
-KerIm (G H K: dgroup) (phi: dgrouphom G H) (psi: dgrouphom H K): dgroup
-  = undefined
+Ker (G H: dgroup) (phi: dgrouphom G H): dgroup
+  = undefined -- Normal Subgroup of G
+
+Im (H K: dgroup) (psi: dgrouphom H K): dgroup
+  = undefined -- Subgroup of K
 
 -- is-normal : ∀ {i j} {G : Group i} → SubgroupProp G j → Type (lmax i j)
 -- is-normal {G = G} P = ∀ g₁ {g₂} → P.prop g₂ → P.prop (Group.conj G g₁ g₂)
