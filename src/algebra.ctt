@@ -462,3 +462,47 @@ Type (M: monoid) (G: PSh M): U
 -- we can only show that the amalgamation of a family
 -- of elements in Type(M) is unique up to (pointwise) isomorphism.
 
+isDifferentialGroup (G: SET): U
+  = (g: isGroup G)
+  * (comm: isCommutative G.1 g.1.1)
+  * (boundary: G.1 -> G.1)
+  * ((x: G.1) -> Path G.1 (boundary (boundary x)) g.1.2.2.1)
+
+unitDGroup: dgroup
+  = ((unit,setUnit),(((op,asso,id,(lx,rx)),inv,(li,ri)),comm,b,z)) where
+    op: unit -> unit -> unit = \(x y: unit) -> y
+    id: unit = tt
+    inv: unit -> unit = \(x: unit) -> tt
+    lx: (x: unit) -> Path unit (op id x) x = \(x: unit) -> <i> (op id x)
+    rx: (x: unit) -> Path unit (op x id) x = split tt -> <i> tt
+    li: (x: unit) -> Path unit (op (inv x) x) id = split tt -> <i> tt
+    ri: (x: unit) -> Path unit (op x (inv x)) id = split tt -> <i> tt
+    b: unit -> unit = idfun unit
+    z: (x: unit) -> Path unit (b (b x)) id = split tt -> <i> tt
+    asso: isAssociative unit op = \(x y z: unit) -> <i> z
+    comm: isCommutative unit op = split tt -> \(y: unit) -> <i> rx y @ -i
+
+-- Group Homomorphism Kernels and Cokernels
+-- are just Homotopy Pullbacks and Pushouts pullback.ctt
+-- not used, just as simplified definitions
+
+isGroupHom (G H: group) (f: G.1.1 -> H.1.1): U
+  = (g1 g2: G.1.1) -> Path H.1.1 (f ((opGroup G) g1 g2)) ((opGroup H) (f g1) (f g2))
+
+isHom (G H: dgroup) (f: G.1.1 -> H.1.1): U
+  = isGroupHom (G.1,G.2.1) (H.1,H.2.1) f
+
+isGroupKer (G H: group) (f: G.1.1 -> H.1.1): U
+  = (g: G.1.1) -> Path H.1.1 (f g) H.2.1.2.2.1
+
+isKer (G H: dgroup) (f: G.1.1 -> H.1.1): U
+  = (g: G.1.1) -> Path H.1.1 (f g) (idGroup (H.1,H.2.1))
+
+isIm (G H: group) (f: G.1.1 -> H.1.1): U
+  = (h: H.1.1) (g: G.1.1) -> Path H.1.1 (f g) h
+
+isKerRing (G H: ring) (f: G.1.1 -> H.1.1): U
+  = (g: G.1.1) -> Path H.1.1 (f g) H.2.2.1.1.1.2.2.1
+
+isKerAb (G H: abgroup) (f: G.1.1 -> H.1.1): U
+  = (g: G.1.1) -> Path H.1.1 (f g) H.2.1.1.2.2.1
