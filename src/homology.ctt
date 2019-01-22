@@ -1,7 +1,8 @@
 {- Homology Theory:
-   - unit Differential Group;
+   - Differential Group, Abelian Groups, units;
    - Chain Complexes.
    - Ker, Im;
+   - Homology Group.
    Copyright (c) Groupoid Infinity, 2016-2018. -}
 
 module homology where
@@ -70,11 +71,11 @@ isKerAb (G H: abgroup)  (f: G.1.1 -> H.1.1): U
 diff (H: dgroup) (g h: H.1.1) : H.1.1
   = (opGroup (H.1,H.2.1)) g ((invGroup (H.1,H.2.1)) h)
 
-conj (G: dgroup) (g1 g2: G.1.1): G.1.1
-  = diff G (op g1 g2) g1 where
---= op (op g1 g2) (inv g1) where
---  inv: G.1.1 -> G.1.1 = invGroup (G.1,G.2.1)
-    op:  G.1.1 -> G.1.1 -> G.1.1 = opGroup (G.1,G.2.1)
+conjugate (G: dgroup) (g1 g2: G.1.1): G.1.1
+   = diff G (G.2.1.1.1 g1 g2) g1
+-- = op (op g1 g2) (inv g1) where
+--   inv: G.1.1 -> G.1.1 = invGroup (G.1,G.2.1)
+--   op:  G.1.1 -> G.1.1 -> G.1.1 = opGroup (G.1,G.2.1)
 
 subtypeProp (A: U): U
   = (P: A -> U) * (a: A) -> isProp (P a)
@@ -90,7 +91,7 @@ subgroupProp (G: dgroup): U
 
 isNormal (G: dgroup) (P: subgroupProp G) : U
   = (X: dgroup)
-  * (g1 g2: G.1.1) -> P.1 g2 -> P.1 (conj G g1 g2)
+  * (g1 g2: G.1.1) -> P.1 g2 -> P.1 (conjugate G g1 g2)
 
 normalSubgroupProp (G: dgroup): U
   = (P: subgroupProp G)
