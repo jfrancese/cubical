@@ -78,15 +78,18 @@ conjugate (G: dgroup) (g1 g2: G.1.1): G.1.1
 --   op:  G.1.1 -> G.1.1 -> G.1.1 = opGroup (G.1,G.2.1)
 
 subtypeProp (A: U): U
-  = (P: A -> U) * (a: A) -> isProp (P a)
+  = (P: A -> U)
+  * (a: A) -> isProp (P a)
 
 subtype (A: U) (P: subtypeProp A): U
-  = (x: A) * (P.1 x)
+  = (x: A) * (P.1 x) -- prop and level
 
 subgroupProp (G: dgroup): U
   = (prop: G.1.1 -> U)
   * (level: (x: G.1.1) -> isProp (prop x))
   * (ident: prop (idGroup (G.1,G.2.1)))
+  * (inv: (g: G.1.1) -> prop g -> prop ((invGroup (G.1,G.2.1)) g))
+  * (op: (g1 g2: G.1.1) -> prop g1 -> prop g2 -> prop ((opGroup (G.1,G.2.1)) g1 g2))
   * ((g1 g2: G.1.1) -> prop g1 -> prop g2 -> prop (diff G g1 g2))
 
 isNormal (G: dgroup) (P: subgroupProp G) : U
@@ -109,10 +112,11 @@ isSetSubEl (G: dgroup) (P: subgroupProp G): isSet (subEl G P)
 
 subgroup (G: dgroup) (P: subgroupProp G): group
   = ((subEl G P,isSetSubEl G P),(op,asso,id,(lx,rx)),inv,(li,ri)) where
+    g: group = (G.1,G.2.1)
     un: U = subEl G P
     op: un -> un -> un = undefined
     id: un = undefined
-    inv: un -> un = undefined
+    inv (x: un): un = ((invGroup g) x.1,P.2.2.2.1 x.1 x.2)
     lx: (x: un) -> Path un (op id x) x = undefined
     rx: (x: un) -> Path un (op x id) x = undefined
     li: (x: un) -> Path un (op (inv x) x) id = undefined
@@ -121,22 +125,27 @@ subgroup (G: dgroup) (P: subgroupProp G): group
 
 ker_prop (G H: dgroup) (phi: dgrouphom G H)
   : subgroupProp G
-  = (prop,level,ident,di) where
+  = (prop,level,ident,inv,op,di) where
     g: group = (G.1,G.2.1)
     h: group = (H.1,H.2.1)
     prop (g: G.1.1): U = Path H.1.1 (phi.1 g) (idGroup h)
+    ident: prop (idGroup g) = phi.2.2
     level (x: G.1.1): isProp (prop x) = undefined
-    ident: prop (idGroup g) = undefined
+    inv: (g: G.1.1) -> prop g -> prop ((invGroup (G.1,G.2.1)) g) = undefined
+    op: (g1 g2: G.1.1) -> prop g1 -> prop g2 -> prop ((opGroup (G.1,G.2.1)) g1 g2) = undefined
     di: (g1 g2: G.1.1) -> prop g1 -> prop g2 -> prop (diff G g1 g2) = undefined
+        -- phi.2.1 g1 (invGroup g2) ∙ ap ((opGroup H) (g2 g2)) (phi.2.2 g2)
 
 im_prop (G H: dgroup) (phi: dgrouphom G H)
   : subgroupProp H
-  = (prop,level,ident,di) where
+  = (prop,level,ident,inv,op,di) where
     g: group = (G.1,G.2.1)
     h: group = (H.1,H.2.1)
     prop (x: H.1.1): U = pTrunc (fiber G.1.1 H.1.1 phi.1 x)
+    ident: prop (idGroup h) = inc ((idGroup g),<i>phi.2.2 @ -i)
     level (x: H.1.1): isProp (prop x) = pTruncIsProp (fiber G.1.1 H.1.1 phi.1 x)
-    ident: prop (idGroup h) = undefined
+    inv: (g: H.1.1) -> prop g -> prop ((invGroup (H.1,H.2.1)) g) = undefined
+    op: (g1 g2: H.1.1) -> prop g1 -> prop g2 -> prop ((opGroup (H.1,H.2.1)) g1 g2) = undefined
     di: (h1 h2: H.1.1) -> prop h1 -> prop h2 -> prop (diff H h1 h2) = undefined
 
 Ker (G H: dgroup) (phi: dgrouphom G H): group
