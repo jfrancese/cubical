@@ -134,8 +134,8 @@ im_prop (G H: dgroup) (phi: dgrouphom G H)
   = (prop,level,ident,di) where
     g: group = (G.1,G.2.1)
     h: group = (H.1,H.2.1)
-    prop (x: H.1.1): U = pTrunc (hofiber G.1.1 H.1.1 phi.1 x)
-    level (x: H.1.1): isProp (prop x) = pTruncIsProp (hofiber G.1.1 H.1.1 phi.1 x)
+    prop (x: H.1.1): U = pTrunc (fiber G.1.1 H.1.1 phi.1 x)
+    level (x: H.1.1): isProp (prop x) = pTruncIsProp (fiber G.1.1 H.1.1 phi.1 x)
     ident: prop (idGroup h) = undefined
     di: (h1 h2: H.1.1) -> prop h1 -> prop h2 -> prop (diff H h1 h2) = undefined
 
