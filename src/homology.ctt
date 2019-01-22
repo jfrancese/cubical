@@ -64,27 +64,85 @@ homology_group (x: ChainComplex): (n: Z) -> dgroup = split
    inl x -> unitDGroup
    inr x -> natElim x where
    natElim: nat -> dgroup = split
-      zero -> unitDGroup
-      succ x -> unitDGroup
+      zero -> unitDGroup -- TODO:
+      succ x -> unitDGroup -- TODO:
 
--- diff : El → El → El
--- diff g h = g ⊙ inv h
+diff (H: dgroup) (g h: H.1.1) : H.1.1
+  = (opGroup (H.1,H.2.1)) g ((invGroup (H.1,H.2.1)) h)
 
-diff (H: dgroup) (g h: H.1.1) : H.1.1 = (opGroup (H.1,H.2.1)) g ((invGroup (H.1,H.2.1)) h)
+subtypeProp (A: U): U
+  = (P: A -> U) * (a: A) -> isProp (P a)
 
--- ker/im-rel' : Rel H.El (lmax i j)
--- ker/im-rel' h₁ h₂ = Trunc -1 (hfiber φ.f (H.diff h₁ h₂))
+conj (G: dgroup) (g1 g2: G.1.1): G.1.1
+  = op (op g1 g2) (inv g1) where
+    g:   group = (G.1,G.2.1)
+    op:  g.1.1 -> g.1.1 -> g.1.1 = opGroup g
+    inv: g.1.1 -> g.1.1 = invGroup g
+
+subtype (A: U) (P: subtypeProp A): U
+  = (x: A) * (P.1 x)
+
+subgroupProp (G: dgroup): U
+  = (prop: G.1.1 -> U)
+  * (level: (x: G.1.1) -> isProp (prop x))
+  * (ident: prop (idGroup (G.1,G.2.1)))
+  * ((g1 g2: G.1.1) -> prop g1 -> prop g2 -> prop (diff G g1 g2))
+
+isNormal (G: dgroup) (P: subgroupProp G) : U
+  = (g1 g2: G.1.1) -> P.1 g2 -> P.1 (conj G g1 g2)
+
+normalSubgroupProp (G: dgroup): U
+  = (P: subgroupProp G)
+  * isNormal G P
+
+subElProp (G: dgroup) (H: subgroupProp G)
+  : subtypeProp G.1.1
+  = (H.1,H.2.1)
+
+subEl (G: dgroup) (H: subgroupProp G): U
+  = subtype G.1.1 (subElProp G H)
+
+ker_prop (G H: dgroup) (phi: dgrouphom G H)
+  : subgroupProp G
+  = (prop,level,ident,di) where
+    g: group = (G.1,G.2.1)
+    h: group = (H.1,H.2.1)
+    prop: G.1.1 -> U = \ (g: G.1.1) -> Path H.1.1 (phi.1 g) (idGroup h)
+    level: (x: G.1.1) -> isProp (prop x) = undefined -- TODO:
+    ident: prop (idGroup g) = undefined -- TODO:
+    di: (g1 g2: G.1.1) -> prop g1 -> prop g2 -> prop (diff G g1 g2) = undefined -- TODO:
 
 KerImRel (G H: dgroup) (phi: dgrouphom G H) (x y: H.1.1): U
   = pTrunc (fiber G.1.1 H.1.1 phi.1 (diff H x y))
 
--- ker/im-El : Type (lmax (lmax i j) k)
--- ker/im-El = SetQuot ker/im-rel
-
 KerImEl (G H: dgroup) (phi: dgrouphom G H): U
   = quot H.1.1 (KerImRel G H phi)
 
--- G ---φ--→ᴳ H ---ψ--→ᴳ K
-
 KerIm (G H K: dgroup) (phi: dgrouphom G H) (psi: dgrouphom H K): dgroup
   = undefined
+
+-- is-normal : ∀ {i j} {G : Group i} → SubgroupProp G j → Type (lmax i j)
+-- is-normal {G = G} P = ∀ g₁ {g₂} → P.prop g₂ → P.prop (Group.conj G g₁ g₂)
+-- NormalSubgroupProp : ∀ {i} (G : Group i) j → Type (lmax i (lsucc j))
+-- NormalSubgroupProp {i} G j = Σ (SubgroupProp G j) is-normal
+-- conj : El → El → El
+-- conj g₁ g₂ = (g₁ ⊙ g₂) ⊙ inv g₁
+-- diff : El → El → El
+-- diff g h = g ⊙ inv h
+-- Subtype : Type (lmax i j)
+-- Subtype = Σ A P.prop
+-- ker/im-rel' : Rel H.El (lmax i j)
+-- ker/im-rel' h₁ h₂ = Trunc -1 (hfiber φ.f (H.diff h₁ h₂))
+-- ker/im-El : Type (lmax (lmax i j) k)
+-- ker/im-El = SetQuot ker/im-rel
+-- G ---φ--→ᴳ H ---ψ--→ᴳ K
+
+--  ker-propᴳ = record {M} where
+--    module M where
+--       prop : G.El → Type j
+--       prop g = φ.f g == H.ident
+--       abstract
+--         ident : prop G.ident
+--         ident = φ.pres-ident
+--         diff : {g₁ g₂ : G.El} → prop g₁ → prop g₂ → prop (G.diff g₁ g₂)
+--         diff {g₁} {g₂} p₁ p₂ = φ.pres-diff g₁ g₂ ∙ ap2 H.diff p₁ p₂ ∙ H.inv-r H.ident
