@@ -69,6 +69,11 @@ subgroup (G: group) (P: subgroupProp G): group
 sq (A: U) (a b: A) (p q: Path A a b): Square A a a b b (<i>a) (<i>b) p q
   = undefined
 
+-- <i j> comp (<_>A) ? [ (i=0) -> <k> p @ j,
+--                       (i=1) -> <k> q @ j,
+--                       (j=0) -> <k> a
+--                       (j=1) -> <k> b ]
+
 ker_prop (G H: group) (phi: grouphom G H)
   : subgroupProp G
   = (prop,level,ident,inv,op,di) where
