@@ -28,7 +28,7 @@ install:
   - stack build
   - CUBICAL=$(stack path --local-install-root)/bin/cubical
   - cd ..
-  - $CUBICAL -b src/k_thery.ctt
-  - $CUBICAL -b src/nat_theory.ctt
+  - $CUBICAL -b src/k_theory.ctt
   - $CUBICAL -b src/category.ctt
+  - $CUBICAL -b src/homology.ctt
   - $CUBICAL -b src/homotopy.ctt
