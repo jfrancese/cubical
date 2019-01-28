@@ -6,6 +6,7 @@
 module pushout where
 import proto
 import pullback
+import nat
 
 -- Homotopy Colimit
 data pushout (A B C: U) (f: C -> A) (g: C -> B)
