@@ -28,7 +28,4 @@ install:
   - stack build
   - CUBICAL=$(stack path --local-install-root)/bin/cubical
   - cd ..
-  - $CUBICAL -b src/k_theory.ctt
-  - $CUBICAL -b src/category.ctt
-  - $CUBICAL -b src/homology.ctt
-  - $CUBICAL -b src/homotopy.ctt
+  - for i in src/*; do $CUBICAL -b $i; done
