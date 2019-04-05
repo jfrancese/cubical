@@ -10,8 +10,13 @@ HomogeneousStructure (V: U): U =
   * (H: hasIdentity M mu e)
   * (inv: isEquiv X X \x.mu x)
   
-et (A B: U): EtaleMap A B -> (A -> B) = undefined
-isSurjective (A B: U) (f: A -> B): U = undefined
+et (A B: U): EtaleMap A B -> (A -> B) =
+  = (f: A -> B)
+  * isÉtaleMap A B f
+
+isSurjective (A B: U) (f: A -> B): U
+  = (b: B) 
+  * pTrunc (fiber A B f b)
 
 manifold (V': U) (V: HomogeneousStructure V'): U
   = (M: U)
